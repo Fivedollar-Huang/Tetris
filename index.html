@@ -2,16 +2,62 @@
 <html lang="en">
 <head>
     <title>Tetris</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 
-<canvas></canvas>
-
 <body style="background: black;">
+
+    <div id="gameWindow">
+        <canvas id="canvas"></canvas>
+        <div id="menu">
+    
+            <div id="mainMenu">
+                <h1 class="menuTitle">
+                    Customize <br> Board Size:
+                </h1>
+
+                <div class="settings">
+                    <div class="settingText">
+                        <p > row </p>
+                        <p> column </p>
+                    </div>
+
+                    <div class="settingInputs">
+                        <input 
+                            class="inputBar" 
+                            id="inputRow"
+                            placeholder="20"
+                            type="number"
+                            min="4"
+                            max="50"
+                            pattern="\d+"
+                        >
+                        <input 
+                            class="inputBar" 
+                            id="inputCol"
+                            placeholder="10"
+                            type="number"
+                            min="4"
+                            max="100"
+                            pattern="\d+"
+                        >
+                    </div>
+
+                </div>
+                <div class="start">
+                    <button class="startButton">Start Game</button>
+                </div>
+            </div>          
+    
+        </div>
+
+    </div>
     
     <script src="js/classes/gameboard.js"></script>
     <script src="js/classes/colors.js"></script>
     <script src="js/classes/blocks.js"></script>
-    <script src="js/events.js"></script>
     <script src="js/index.js"></script>
+    <script src="js/gameControl.js"></script>
+    <script src="js/events.js"></script>
 </body>
 </html>

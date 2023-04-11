@@ -127,6 +127,12 @@ class Gameboard{
             }
         }
         this.draw()
+        
+        if(!this.running){
+            console.log("gameOver")
+            showEndGame()
+            return
+        }
 
         let rows = this.findFilledRows()
         if(rows.length > 0){
@@ -190,7 +196,7 @@ class Gameboard{
                         ctx.fillRect(
                             0, this.blockWidth * rows[i],
                             this.blockWidth * this.dimension.col, 
-                            this.blockWidth * this.dimension.row
+                            this.blockWidth
                         )
                     }
                 }

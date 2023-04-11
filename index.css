@@ -1,0 +1,96 @@
+#gameWindow{
+    /* width: 1fr; */
+    /* height: 1024px; */
+    display: flex;
+    background-color: lightpink;
+    justify-content: center;
+    padding: 5% 5%;
+    position: relative;
+}
+
+#canvas{
+    /* position: relative; */
+    width: 300px;
+    height: 600px;
+    /* background-color: lightblue; */
+}
+
+#menu{
+    background-color: rgba(0,0,0,0.3);
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#mainMenu{
+    width: 300px; 
+    height: 350px; 
+    background-color: white;
+    position: relative;
+    border-radius: 35px;
+    
+}
+
+.menuTitle{
+    text-align: center; 
+    padding-top: 20px;
+    margin-bottom: 10px;
+}
+
+.settings{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* background-color: lightpink; */
+    margin: 0px 45px;
+    margin-top: 0px;
+    position: relative;
+}
+
+.settingText{
+    margin-left: 0px;
+    text-align: center; 
+    font-size: 20px;
+}
+
+.settingInputs{
+    display: flex; 
+    /* background-color: lightblue;  */
+    height: 100px;
+    width: 65%;
+    flex-direction: column;
+}
+
+.inputBar{
+    flex-grow: 1;
+    font-size: 20px; 
+    margin-top: 10px;
+    margin-bottom: 7px;
+    padding-left: 5px;
+    padding-top: 3px;
+}
+.start{
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.startButton{
+    width: 200px;
+    height: 70px;
+    font-size: 25px;
+    margin-top: 13px;
+    border: thick solid black;
+    border-radius: 35px;
+    background-color: white;
+    color: black;
+}
+

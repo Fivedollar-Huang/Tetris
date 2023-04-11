@@ -9,8 +9,6 @@ const keys={
 window.addEventListener('keydown', keydown)
 window.addEventListener('keyup', keyup)
 
-var gamePaused = false;
-
 function keydown(event){
     switch(event.key){
         case 'a':
@@ -33,6 +31,9 @@ function keydown(event){
             // keys.p = true
             gamePaused = !gamePaused
             break;
+        case 'h':
+            showMenu()
+            break;
     }
 }
 function keyup(event){
@@ -49,6 +50,9 @@ function keyup(event){
             break;
         case 'w':
             keys.w = false
+            break;
+        case 'h':
+            hideMenu()
             break;
     }
 }
