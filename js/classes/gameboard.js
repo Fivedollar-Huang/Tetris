@@ -47,6 +47,18 @@ class Gameboard{
         this.resize()
     }
 
+    bottomDrop(){
+        while(this.checkFallable()){
+            this.tetromino.position[0]++;
+        }
+
+        this.stablizeTetromino()
+
+        this.tetromino.position = -1
+        this.createNewTetromino()
+        this.lastExecute = this.timePassed
+    }
+
     holdCurrentTetromino(){
         if(this.hold) return
         let posCol = -2 + Math.ceil(this.dimension.col/2)
@@ -392,7 +404,40 @@ class Gameboard{
         }
         if(this.checkCollision(newShape, this.tetromino.position)){
             this.tetromino.shape = newShape
+            return
         }
+
+        // *** wall kicks ***
+        // kick left:
+        if(this.checkCollision(newShape, this.tetromino.position, -1)){
+            this.tetromino.shape = newShape
+            this.tetromino.position[1]--
+            return
+        }
+
+        //kick right:
+        if(this.checkCollision(newShape, this.tetromino.position, 1)){
+            this.tetromino.shape = newShape
+            this.tetromino.position[1]++
+            return
+        }
+
+        // *** double kicks ***
+        // kick left:
+        if(this.checkCollision(newShape, this.tetromino.position, -2)){
+            this.tetromino.shape = newShape
+            this.tetromino.position[1] -= 2
+            return
+        }
+
+        //kick right:
+        if(this.checkCollision(newShape, this.tetromino.position, 2)){
+            this.tetromino.shape = newShape
+            this.tetromino.position[1] += 2
+            return
+        }
+        
+
     }
     moveLeft(){
         if(this.checkMoveable(true)){
@@ -411,11 +456,11 @@ class Gameboard{
         this.dropSpeed = 1000
     }
 
-    checkCollision(shape, pos){
+    checkCollision(shape, pos, kick=0){
         for(let i = 0; i < shape.length; i++){
             for(let j = 0; j < shape.length; j++){
                 let row = pos[0] + i
-                let col = pos[1] + j
+                let col = pos[1] + j + kick
                 if(shape[i][j] != 0){
                     if(row >= this.dimension.row ||
                         col < 0 || col >= this.dimension.col){

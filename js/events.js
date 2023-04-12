@@ -34,6 +34,8 @@ function keydown(event){
         case 'h':
             gameboard.holdCurrentTetromino()
             break;
+        case ' ':
+            gameboard.bottomDrop()
     }
 }
 function keyup(event){
