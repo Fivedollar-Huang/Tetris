@@ -14,19 +14,77 @@ class Gameboard{
                 this.board[i].push(0)
             }
         }
-        this.blockWidth = this.getBlockWidth()
+        this.blockWidth = 10
         
         this.tetromino = {
             position: [], 
             color: 0,
-            shape: [[]],
+            shape: [],
         }
-        this.createTetromino()
+
+        this.nextTetromino = {
+            position: [], 
+            color: 0,
+            shape: [],
+        }
+
+        this.holdTetromino = {
+            position: [], 
+            color: 0,
+            shape: [],
+        }
+
+        this.createNewTetromino()
+        this.createNewTetromino()
 
         this.lastExecute = performance.now()
         this.timePassed = this.lastExecute
         this.running = true
+        
+        this.hold = false
+
+        this.score = 0
+        this.resize()
     }
+
+    holdCurrentTetromino(){
+        if(this.hold) return
+        let posCol = -2 + Math.ceil(this.dimension.col/2)
+        if(this.holdTetromino.position.length == 0){
+            console.log("Hold current block")
+            this.holdTetromino.position = [
+                this.tetromino.position[0],
+                posCol,
+            ]
+            this.holdTetromino.color = this.tetromino.color
+            for(let i = 0; i < this.tetromino.shape.length; i++){
+                this.holdTetromino.shape.push([])
+                for(let j = 0; j < this.tetromino.shape.length; j++){
+                    this.holdTetromino.shape[i].push(this.tetromino.shape[i][j])
+                }
+            }
+            this.createNewTetromino()
+        }
+        else{
+            let temp = this.tetromino
+            this.tetromino = this.holdTetromino
+            this.holdTetromino = temp
+
+            if(this.tetromino.shape.length == 4){
+                // I block (long one)
+                this.tetromino.position = [-2, posCol]
+            }
+            else{
+                this.tetromino.position = [-3, posCol]
+            }
+        }
+        this.hold = true
+    }
+
+    resize(){
+        this.blockWidth = boardSize.width
+    }
+
     update(){
         if(this.running){
             this.draw()
@@ -35,18 +93,71 @@ class Gameboard{
         }
     }
 
+    drawHoldTetromino(){
+        ctx.fillStyle = colors[0]
+        ctx.fillRect(this.blockWidth * (this.dimension.col + 2),
+                     this.blockWidth * 8,
+                     this.blockWidth * this.holdTetromino.shape.length,
+                     this.blockWidth * this.holdTetromino.shape.length)
+
+        for(let i = 0; i < this.holdTetromino.shape.length; i++){
+            for(let j = 0; j < this.holdTetromino.shape.length; j++){
+                if(this.holdTetromino.shape[i][j] != 0)
+                    this.drawBlock(i + 7, j + this.dimension.col + 1, this.holdTetromino.color)
+            }
+        }
+    }
+    drawNextTetromino(){
+        ctx.fillStyle = colors[0]
+        ctx.fillRect(this.blockWidth * (this.dimension.col + 2),
+                     this.blockWidth * 2,
+                     this.blockWidth * this.nextTetromino.shape.length,
+                     this.blockWidth * this.nextTetromino.shape.length)
+
+        for(let i = 0; i < this.nextTetromino.shape.length; i++){
+            for(let j = 0; j < this.nextTetromino.shape.length; j++){
+                if(this.nextTetromino.shape[i][j] != 0)
+                    this.drawBlock(i + 1, j + this.dimension.col + 1, this.nextTetromino.color)
+            }
+        }
+    }
+
     drawBlock(row, col, color){
+        if(row < 0) return
         ctx.fillStyle = colors[color]
         ctx.fillRect(
-            this.blockWidth * col, this.blockWidth * row,
+            this.blockWidth * (col+1), this.blockWidth * (row+1),
             this.blockWidth, this.blockWidth
         )
     }
 
+    drawText(text, row){
+        ctx.font = `${this.blockWidth}px Arial`
+        ctx.fillStyle = 'black'
+
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'bottom'
+        ctx.fillText(
+            text, 
+            this.blockWidth * (this.dimension.col + 2),
+            this.blockWidth * (row + 1)
+        )
+    }
     draw(){
         // reset screen
-        ctx.fillStyle = 'lightgray'
+        ctx.fillStyle = 'gray'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = colors[0]
+        ctx.fillRect(this.blockWidth, this.blockWidth,
+                     this.blockWidth * this.dimension.col,
+                     this.blockWidth * this.dimension.row)
+
+        this.drawNextTetromino()
+        this.drawHoldTetromino()
+        this.drawText('next: ', 1)
+        this.drawText('hold: ', 7)
+        this.drawText('score: ', 13)
+        this.drawText(this.score, 14)
 
         // draw occupied blocks
         for(let i = 0; i < this.dimension.row; i++){
@@ -56,19 +167,6 @@ class Gameboard{
                 }
             }
         }
-        // draw grid
-        // ctx.beginPath();
-        // for(let i = 0; i < this.dimension.row; i++){
-        //     ctx.strokeStyle = 'gray'
-        //     ctx.moveTo(0, this.blockWidth*i)
-        //     ctx.lineTo(this.blockWidth * this.dimension.col, this.blockWidth*i)
-        // }
-        // for(let i = 0; i < this.dimension.col; i++){
-        //     ctx.strokeStyle = 'gray'
-        //     ctx.moveTo(this.blockWidth*i, 0)
-        //     ctx.lineTo(this.blockWidth*i, this.blockWidth * this.dimension.row)
-        // }
-        // ctx.stroke()
     }
 
     drawFallingBlock(){
@@ -76,12 +174,17 @@ class Gameboard{
         for(let i = 0; i < this.tetromino.shape.length; i++){
             for(let j = 0; j < this.tetromino.shape.length; j++){
                 if(this.tetromino.shape[i][j] != 0){
-                    ctx.fillStyle = colors[this.tetromino.color]
-                    ctx.fillRect(
-                        this.blockWidth * (j + this.tetromino.position[1]),
-                        this.blockWidth * (i + this.tetromino.position[0]),
-                        this.blockWidth, this.blockWidth
+                    this.drawBlock(
+                        this.tetromino.position[0] + i,
+                        this.tetromino.position[1] + j,
+                        this.tetromino.color
                     )
+                    // ctx.fillStyle = colors[this.tetromino.color]
+                    // ctx.fillRect(
+                    //     this.blockWidth * (j + this.tetromino.position[1]+1),
+                    //     this.blockWidth * (i + this.tetromino.position[0]+1),
+                    //     this.blockWidth, this.blockWidth
+                    // )
                 }
             }
         }
@@ -108,7 +211,7 @@ class Gameboard{
         this.stablizeTetromino()
 
         this.tetromino.position = -1
-        this.createTetromino()
+        this.createNewTetromino()
     }
 
     stablizeTetromino(){
@@ -130,14 +233,14 @@ class Gameboard{
         
         if(!this.running){
             console.log("gameOver")
-            showEndGame()
+            showEndGame(this.score)
             return
         }
 
         let rows = this.findFilledRows()
         if(rows.length > 0){
             this.running = false
-            this.blingBlingRows(6, rows)
+            this.blingBlingBling(6, rows)
         }
         // this.clearRows()
     }
@@ -178,9 +281,23 @@ class Gameboard{
                 }
             }
         }
+        switch(rows.length){
+            case 4:
+                this.score += 800
+                break;
+            case 3:
+                this.score += 500
+                break;
+            case 2:
+                this.score += 300
+                break;
+            case 1:
+                this.score += 100
+                break;
+        }
     }
 
-    blingBlingRows(count, rows){
+    blingBlingBling(count, rows){
         if(count > 0){
             if(count % 2){
                 for(let i = 0; i < rows.length; i++){
@@ -192,16 +309,11 @@ class Gameboard{
             else{
                 for(let i = 0; i < rows.length; i++){
                     for(let j = 0; j < this.dimension.col; j++){
-                        ctx.fillStyle = colors[0]
-                        ctx.fillRect(
-                            0, this.blockWidth * rows[i],
-                            this.blockWidth * this.dimension.col, 
-                            this.blockWidth
-                        )
+                        this.drawBlock(rows[i], j, 0)
                     }
                 }
             }
-            setTimeout(()=>this.blingBlingRows(count-1, rows), 200)
+            setTimeout(()=>this.blingBlingBling(count-1, rows), 200)
         }
         else{
             this.clearRows(rows)
@@ -251,13 +363,12 @@ class Gameboard{
     checkFallable(){
         let fallable = true
         for(let i = 0; i < this.tetromino.shape.length; i++){
-            for(let j = 0; j < this.tetromino.shape[i].length; j++){
+            for(let j = 0; j < this.tetromino.shape.length; j++){
                 if(this.tetromino.shape[i][j] != 0){
                     let row = this.tetromino.position[0] + i + 1
                     let col = this.tetromino.position[1] + j
-
                     if( row >= this.dimension.row || col >= this.dimension.col ||
-                        (row >= 0 && this.board[row][col] != 0))
+                        (row >= 0 && col >= 0 && this.board[row][col] != 0))
                     {
                         fallable = false
                         break;
@@ -267,9 +378,6 @@ class Gameboard{
         }
         return fallable
     }
-
-
-
 
 
     rotate(){
@@ -324,21 +432,26 @@ class Gameboard{
 
 
 
-    createTetromino(){
+    createNewTetromino(){
+        let temp = this.tetromino
+        this.tetromino = this.nextTetromino
+
+        this.nextTetromino = temp
         const randomIndex = Math.floor(Math.random() * blocks.length);
         let newTetromino = blocks[randomIndex];
-        this.tetromino.position = [
+        this.nextTetromino.position = [
             newTetromino.position[0], 
-            newTetromino.position[1] + this.dimension.col/2,
+            newTetromino.position[1] + Math.ceil(this.dimension.col/2),
         ]
-        this.tetromino.color = newTetromino.color
-        this.tetromino.shape = []
+        this.nextTetromino.color = newTetromino.color
+        this.nextTetromino.shape = []
         for(let i = 0; i < newTetromino.shape.length; i++){
-            this.tetromino.shape.push([])
+            this.nextTetromino.shape.push([])
             for(let j = 0; j < newTetromino.shape.length; j++){
-                this.tetromino.shape[i].push(newTetromino.shape[i][j])
+                this.nextTetromino.shape[i].push(newTetromino.shape[i][j])
             }
         }
+        this.hold = false
 
     }
 

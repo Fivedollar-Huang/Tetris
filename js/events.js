@@ -32,7 +32,7 @@ function keydown(event){
             gamePaused = !gamePaused
             break;
         case 'h':
-            showMenu()
+            gameboard.holdCurrentTetromino()
             break;
     }
 }

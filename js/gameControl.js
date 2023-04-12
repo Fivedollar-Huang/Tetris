@@ -3,11 +3,9 @@ var gameboard
 var gamePaused = false
 var gameRunning = false
 
-ctx.fillStyle = 'lightgray'
-ctx.fillRect(0, 0, canvas.width, canvas.height)
-
 function startGame(row, col){
     gameboard = new Gameboard(row, col)
+    console.log(gameboard)
     gameRunning = true
     update()
 }

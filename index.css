@@ -2,9 +2,9 @@
     /* width: 1fr; */
     /* height: 1024px; */
     display: flex;
-    background-color: lightpink;
+    /* background-color: lightpink; */
     justify-content: center;
-    padding: 5% 5%;
+    /* padding: 5% 5%; */
     position: relative;
 }
 
