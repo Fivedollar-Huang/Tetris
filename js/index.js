@@ -63,7 +63,7 @@ function startGameEvent(){
     let col = parseInt(inputCol.value || 10)
     if(row > 50) row = 50
     else if(row < 15) row = 15
-    if(col > 100) col = 100
+    if(col > 50) col = 50
     else if(col < 5) col = 5
 
     menu.style.display = 'none'
