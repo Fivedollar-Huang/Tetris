@@ -77,7 +77,7 @@ function startGameEvent(){
 function showEndGame(score){
     menu.style.display = 'flex'
     startButton.textContent = 'Restart Game'
-    menuTitle.innerHTML = `You Lose <br> Score: ${score}`
+    menuTitle.innerHTML = `Game Over <br> Score: ${score}`
     gameRunning = false
 }
 

@@ -1,3 +1,8 @@
+h3{
+    padding: 0px;
+    margin: 0px;
+}
+
 #gameWindow{
     /* width: 1fr; */
     /* height: 1024px; */
@@ -34,16 +39,27 @@
 
 #mainMenu{
     width: 300px; 
-    height: 350px; 
+    height: 330px; 
     background-color: white;
     position: relative;
     border-radius: 35px;
-    
+    margin-left: 5%;
+    margin-top: -140px;
+}
+
+#rowCol{
+    margin-top: 70px;
+    align-items: center;
+    display: grid;
+    /* align-items: center; */
+    justify-content: center;
+    background-color: white;
+    border-radius: 35px;
 }
 
 .menuTitle{
     text-align: center; 
-    padding-top: 20px;
+    /* padding-top: 20px; */
     margin-bottom: 10px;
 }
 
@@ -95,4 +111,35 @@
     background-color: white;
     color: black;
 }
+
+#help{
+    background-color: white;
+    width: 350px;
+    height: 500px;
+
+    margin-left: 5%;
+    margin-right: 5%;
+    /* position: fixed; */
+    /* display: flex; */
+    z-index: 2;
+    border-radius: 25px;
+}
+
+#helpTexts{
+    margin-left: 10%;
+}
+
+#helpTitle{
+    left: 50%;
+    top: 50%;
+}
+
+.helpText{
+    display: grid;
+    grid-template-columns: 3fr 1fr 7fr;
+    margin-bottom: 10%;
+    /* padding: 0px; */
+
+}
+
 
